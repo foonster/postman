@@ -1,6 +1,5 @@
 # Postman
  
-
  Postman is a generic PHP processing script to the e-mail gateway that 
  parses the results of any form and sends them to the specified users. This 
  script has many formatting and operational options, most of which can be 
