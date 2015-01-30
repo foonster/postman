@@ -26,12 +26,14 @@ $aRequiredFields = array(
 	'Name' => array( 
 		'id' => 'name',
 		'min-length' => 3,
-		'scrub' => 'ALPHA'
+		'scrub' => 'ALPHA',
+		'type' => 'text'
 	),
 	'Email' => array( 
 		'id' => 'email',
-		'length' => 3,
-		'scrub' => 'EMAIL'
+		'min-length' => 3,
+		'scrub' => 'EMAIL',
+		'type' => 'text'
 	)
 );
 
@@ -44,13 +46,13 @@ $aEmail = array(
 'subject' => '', // subject of the email.
 'msg-html' => 
 	array( 
-		'path' => dirname( __FILE__ ) . '/email-html.php' , // 'file path'
+		'path' => __DIR__ . '/email-html.php' , // 'file path'
 		'character-set' => 'utf-8' , //  'character set'
 		'content-type' =>'8bit' // 'content type' 7bit, 8bit, base64 
 	), // settings for HTML message
 'msg-text' => 
 	array( 
-		'path' => dirname( __FILE__ ) . '/email-text.php' , // 'file path'
+		'path' => __DIR__ . '/email-text.php' , // 'file path'
 		'character-set' => 'utf-8' , //  'character set'
 		'content-type' =>'8bit' // 'content type' 7bit, 8bit, base64 
 	), // settings for Plain Text message
@@ -67,13 +69,13 @@ $aAcknowledgment = array(
 'subject' => 'Thank You,',
 'msg-html' => 
 	array( 
-		'path' => dirname( __FILE__ ) . '/acknowledgment-html.php' , // 'file path'
+		'path' => __DIR__ . '/acknowledgment-html.php' , // 'file path'
 		'character-set' => 'utf-8' , //  'character set'
 		'content-type' =>'8bit' // 'content type'
 	), // settings for HTML message
 'msg-text' => 
 	array( 
-		'path' => dirname( __FILE__ ) . '/acknowledgment-text.php' , // 'file path'
+		'path' => __DIR__ . '/acknowledgment-text.php' , // 'file path'
 		'character-set' => 'utf-8' , //  'character set'
 		'content-type' =>'8bit' // 'content type'
 	), // settings for Plain Text message
@@ -100,7 +102,7 @@ $cReturnTXT = 'Thank you for your feedback. We will be in contact with you.';
 // =============================================================================
 // =============================================================================
 
-include dirname( __FILE__ ) . '/_postman_6_53_08.php';
+include __DIR__ . '/_postman.php';
 
 /******************************************************************************\
 +------------------------------------------------------------------------------+

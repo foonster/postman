@@ -31,11 +31,11 @@
 
 // load up Google Captcha Library
 
-require dirname( __FILE__ ) . '/recaptchalib.php';
+require __DIR__ . '/recaptchalib.php';
 
 // load up FOONSTER EMAIL CLASS
 
-require dirname( __FILE__ ) . '/EMAIL.php';
+require __DIR__ . '/EMAIL.php';
 	
 $email = new EMAIL();
 
@@ -64,101 +64,72 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
    
 			foreach ( $aRequiredFields AS $cKey => $aValue ) 
 			{
-   
-				if ( substr( $aValue['id'] , 0 , 4 ) != 'fupd' ) 
-				{
-				
-					// scrub the variable before performing any test.
-					
-					$_POST[ $aValue['id'] ] = $email->scrubVar( $_POST[ $aValue['id'] ] , $aValue['scrub'] );
-
-					// test the length of the values all except for HYPERLINKS and EMAIL 
-					// because those do not make sense.
-					
-					if ( 
-						strlen( $_POST[ $aValue['id'] ] ) < $aValue['min-length'] &&
-						$aValue['scrub'] != 'EMAIL' &&
-						$aValue['scrub'] != 'HYPERLINK'										
-					)
-					{
-															
-						throw new Exception ( "The $cKey field is missing or contains invalid data." );
-					
-					}
-					
-					// if an email address perform a second validation to ensure the 
-					// email address is valid.
-					
-					if ( strtoupper( $aValue['scrub'] ) == 'EMAIL' )
-					{
-									
-						if ( !$email->isAddressValid( $_POST[ $aValue['id'] ] ) ) 
-						{	
-   
-							throw new Exception ( 'The email address provided is not valid. (' . $cKey . ')' );
-      
-						}   
-					
-					}  
-					
+  				
+				if ($aValue['scrub'] != 'N/A') {
+					$_POST[ $aValue['id'] ] = $email->scrubVar($_POST[ $aValue['id'] ], $aValue['scrub']);
 				}
+
+				if ( 
+					strlen( $_POST[ $aValue['id'] ] ) < $aValue['min-length'] &&
+					$aValue['scrub'] != 'EMAIL' &&
+					$aValue['scrub'] != 'HYPERLINK' && 
+					$aValue['type'] != 'file'
+					) {
+						throw new Exception ( "The $cKey field is missing or contains invalid data." );					
+				}
+
+				// check for file uploads
+				if ($aValue['type'] == 'file') {
+					if ($_FILES[$aValue['id']]['error'] != 0) {
+						throw new Exception ( "The $cKey is required and there was an error, ensure you have attached a file.." );											
+					}
+				}
+					
+				// if an email address perform a second validation to ensure the 
+				// email address is valid.
+					
+				if ( strtoupper( $aValue['scrub'] ) == 'EMAIL' ) {
+					if ( !$email->isAddressValid( $_POST[$aValue['id']])) {	
+						throw new Exception ( 'The email address provided is not valid. (' . $cKey . ')' );
+					}   
+				}  
 
 			}
 
-			if ( !empty( $_SERVER['HTTP_USER_AGENT'] ) ) 
-			{
+			if (!empty($_SERVER['HTTP_USER_AGENT'])) {
    
 				foreach ( $_POST AS $cKey => $cValue ) 
 				{
 		
-					// LOAD STOP WORD FILE
-   	
-					if ( file_exists( $cStopWords ) )
-					{
+					// LOAD STOP WORD FILE   
+					if (file_exists($cStopWords)) {
 
 						$aStopWords = preg_split( "/\n/", $email->slurp( $cStopWords ));
       	
 						foreach ( $aStopWords AS $xKey => $xValue ) 
 						{
-      
 							$aStopWords[$xKey] = '/\b' . trim( $xValue ) . '\b/i';
-      
 						}
    
 					}
 										         
-					if ( $cKey != 'email' && $cKey != 'msg' && substr( $cKey , 0 , 4 ) != 'fupd' ) 
-					{   
-			
+					if ( $cKey != 'email' && $cKey != 'msg' && substr($cKey, 0, 4) != 'fupd') {   
 						// EACH FIELD IS PROCESSED AND ANY STOP WORDS ARE REMOVED
-					
-						if ( sizeof( $aStopWords ) > 0 )
-						{
-					
-							$cStop = $email->stopText( $_POST[$cKey] );
-				
-							$_POST[$cKey] = preg_replace( $aStopWords, $cStop , $_POST[$cKey] );
-												
+						if ( sizeof($aStopWords) > 0) {
+							$cStop = $email->stopText($_POST[$cKey]);
+							$_POST[$cKey] = preg_replace($aStopWords, $cStop, $_POST[$cKey]);
 						}
-         	         	
 						$email->checkVar( $_POST[$cKey] );
-										      
 					}
 				
 				}
 						
 				// attach any files in the file upload
 			
-				if ( $lAttachUploads )
-				{
-		
-					foreach ( $_FILES AS $xKey => $xValue ) 
-					{
-         
-						$email->addFileAttachment ( $xValue );
-    	  
-					}
-				
+				if ($lAttachUploads) {		
+					foreach ($_FILES AS $xKey => $xValue) {
+						$email->addFileAttachment ( $xValue );    	  
+					}				
 				}
 			
 				// add attachments from configuration file.
@@ -176,15 +147,10 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
 				}
    
 				$email->to( $aEmail['to'] );
-
 				$email->addCarbonCopyRecipient( $aEmail['cc'] );
-
 				$email->addBlindCopyRecipient( $aEmail['bcc'] );
-
 				$email->from( $_POST['email'] , $_POST['name'] );
-
-				$email->subject( $aEmail['subject'] );
-			
+				$email->subject( $aEmail['subject'] );			
 				$email->message( 
 					$email->slurp( $aEmail['msg-text']['path'] , $_POST ) , 
 					'TEXT' , 
@@ -202,21 +168,14 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
 				if ( $email->send() ) 
 				{
       
-					if ( $email->isAddressValid( $aAcknowledgment['from'] ) && !empty( $aAcknowledgment['subject'] ) ) 
-					{
+					if ( $email->isAddressValid( $aAcknowledgment['from'] ) && !empty( $aAcknowledgment['subject'] ) ) {
 				
-						$email->reset(); // reset fields
-				
-						$email->to( $_POST['email'] );
-					
-						$email->from( $aAcknowledgment['from'] );
-					
-						$email->addCarbonCopyRecipient( $aAcknowledgment['cc'] );
-					
-						$email->addBlindCopyRecipient( $aAcknowledgment['bcc'] );
-					
-						$email->subject( $aAcknowledgment['subject'] );
-					
+						$email->reset(); // reset fields				
+						$email->to( $_POST['email'] );					
+						$email->from( $aAcknowledgment['from'] );					
+						$email->addCarbonCopyRecipient( $aAcknowledgment['cc'] );					
+						$email->addBlindCopyRecipient( $aAcknowledgment['bcc'] );					
+						$email->subject( $aAcknowledgment['subject'] );					
 						$email->message( $email->slurp( 
 							$aAcknowledgment['msg-text']['path'] , $_POST ) , 
 							'TEXT' , 

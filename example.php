@@ -146,14 +146,8 @@ if ( $_SERVER['REQUEST_METHOD'] == 'GET' || !empty( $_POST ) )
 		<label for="fupd_1">File:</label>
 		<input type="file" name="fupd_1" id="fupd_1"/><p />
 
-		<?php
-		
-		if ( $lCaptcha ) {
-		
-			echo recaptcha_get_html( $publickey , $reError); 
-		
-		}
-		
+		<?php		
+		echo ($lCaptcha) ? recaptcha_get_html( $publickey , $reError) : false;		
 		?>
 		
 		<input type="submit" name="sbmtbtn" id="sbmtbtn" value="Send Form" class="btn">

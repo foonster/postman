@@ -24,6 +24,8 @@ variable files if you are running multiple forms on your site.
 
 ### VARIABLES IN CONFIGURATION FILE
 
+$lAttachUploads - allow file uploads
+
 $cStopWords = path to file containing all words that should be 
 removed from any form field.  These are not partial and are considered
 word boundry limitations
@@ -81,7 +83,8 @@ to send an acknowledgement email to the end-user of the form.
        	'Name' => array( 
        		'id' => 'form id associated with field',
        		'min-length' => minimum length of value,
-       		'scrub' => 'type of scrubbing for the variable.'
+       		'scrub' => 'type of scrubbing for the variable.',
+          'type' => 'type of field.' // must be marked as "file" to test.
        	),
        
 
@@ -90,13 +93,21 @@ Example:
        	'Name' => array( 
        		'id' => 'name',
        		'min-length' => 3,
-       		'scrub' => 'ALPHA'
+       		'scrub' => 'ALPHA',
+          'type' => 'text'
        	),
        	'Email' => array( 
        		'id' => 'email',
        		'length' => 3,
-       		'scrub' => 'EMAIL'
-       	)
+       		'scrub' => 'EMAIL',
+          'type' => 'text'
+       	),
+        'File' => array( 
+          'id' => 'fupd_1',
+          'length' => 3,
+          'scrub' => 'N/A',
+          'type' => 'file'
+        )
        );
 
 
@@ -112,6 +123,7 @@ Example:
 		 REMOVE_SPACES - Remove all spaces from the string.
 		 REMOVE_DOUBLESPACE - Remove double space and replace with single spaces.
 		 BASIC - Only characters found on the keyboard no special characters.
+     N/A - Not applicable and no scrubbing will be performed on the variable.
 
 
  ### RETURN
