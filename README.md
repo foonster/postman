@@ -7,7 +7,7 @@
 
 ## FILES
 
-_postman_6_53_08.php - main processing file.
+_postman.php - main processing file.
 
 example.php - example PHP file using the script
  
