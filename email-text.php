@@ -1,4 +1,3 @@
-Plain Text
 
     Name: <?=$aOutput['name'] ?>
 

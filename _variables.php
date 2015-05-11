@@ -9,11 +9,19 @@
 
 // turn OFF all error reporting	
 
-error_reporting( 0 ); 
+error_reporting(0); 
 
 // enable reCaptcha
 
+$return = 'redirect'; // self, redirect, or json
+
+$redirectUrl = '';
+
 $lCaptcha = true;
+
+$googleSiteKey = '';
+
+$googleSecretKey = '';
 
 // allow file uploads to be used by this form.
 
@@ -26,14 +34,12 @@ $aRequiredFields = array(
 	'Name' => array( 
 		'id' => 'name',
 		'min-length' => 3,
-		'scrub' => 'ALPHA',
-		'type' => 'text'
+		'scrub' => 'ALPHA'
 	),
 	'Email' => array( 
 		'id' => 'email',
-		'min-length' => 3,
-		'scrub' => 'EMAIL',
-		'type' => 'text'
+		'length' => 3,
+		'scrub' => 'EMAIL'
 	)
 );
 
@@ -41,9 +47,9 @@ $aRequiredFields = array(
 
 $aEmail = array(
 'to' => '', // single email address
-'cc' => '', // comma or semi-colon delimited
-'bcc' => '', // comma or semi-colon delimited
-'subject' => '', // subject of the email.
+'cc' => '', // single email address
+'bcc' => '', // single email address
+'subject' => 'Contact Form', // subject of the email.
 'msg-html' => 
 	array( 
 		'path' => __DIR__ . '/email-html.php' , // 'file path'
@@ -69,13 +75,13 @@ $aAcknowledgment = array(
 'subject' => 'Thank You,',
 'msg-html' => 
 	array( 
-		'path' => __DIR__ . '/acknowledgment-html.php' , // 'file path'
+		'path' => dirname( __FILE__ ) . '/acknowledgment-html.php' , // 'file path'
 		'character-set' => 'utf-8' , //  'character set'
 		'content-type' =>'8bit' // 'content type'
 	), // settings for HTML message
 'msg-text' => 
 	array( 
-		'path' => __DIR__ . '/acknowledgment-text.php' , // 'file path'
+		'path' => dirname( __FILE__ ) . '/acknowledgment-text.php' , // 'file path'
 		'character-set' => 'utf-8' , //  'character set'
 		'content-type' =>'8bit' // 'content type'
 	), // settings for Plain Text message
@@ -86,10 +92,15 @@ $cStopWords = 'stop-file.txt';
 
 // =============================================================================
 // =============================================================================
+// 'self' => array('type' => 'url', 'what' => 'http://www.foonster.com'), // 
+// 'self' => array('type' => 'message', 'what' => 'Thank you for your feedback. We will be in contact with you.'),
 
-# $cReturnURL = 'thank-you.php';
-
-$cReturnTXT = 'Thank you for your feedback. We will be in contact with you.';
+$returnMethod = 
+	array(
+		'json' => array('type' => 'na'),
+		'self' => array('message'=> 'Message sent'), // 
+		'redirect' => array('url' => $redirectUrl), // 
+		);
 
 // - do not adjust below this line, unless you know what you are doing.
 // =============================================================================
@@ -101,9 +112,7 @@ $cReturnTXT = 'Thank you for your feedback. We will be in contact with you.';
 // =============================================================================
 // =============================================================================
 // =============================================================================
-
 include __DIR__ . '/_postman.php';
-
 /******************************************************************************\
 +------------------------------------------------------------------------------+
 | Foonster Publishing Software                                                 |

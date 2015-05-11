@@ -1,5 +1,3 @@
-Acknowledgement Email
-HTML Version<p />
 <table>
 	<tr>
 		<td width="15%" align="right">

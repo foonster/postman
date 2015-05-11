@@ -11,10 +11,8 @@ _postman.php - main processing file.
 
 example.php - example PHP file using the script
  
-EMAIL.php - Foonster Technology Email Module - YAMM
- 
-recaptchalib.php - Google Captcha Module 
- 
+Email.php - Foonster Technology Email Module - YAMM
+  
 stop-file.txt - file containing all words that you 
 want to supress from the email.
 

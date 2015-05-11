@@ -115,7 +115,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'GET' || !empty( $_POST ) )
 
 ?>
 
-<form action="<?=$_SERVER['PHP_SELF'] ?>" method="POST" id="foonster" name="foonster" enctype="multipart/form-data">
+<form action="" method="POST" id="foonster" name="foonster" enctype="multipart/form-data">
 	<fieldset>
 		<legend>Contact Form</legend>
 	
@@ -146,10 +146,8 @@ if ( $_SERVER['REQUEST_METHOD'] == 'GET' || !empty( $_POST ) )
 		<label for="fupd_1">File:</label>
 		<input type="file" name="fupd_1" id="fupd_1"/><p />
 
-		<?php		
-		echo ($lCaptcha) ? recaptcha_get_html( $publickey , $reError) : false;		
-		?>
-		
+		<div class="g-recaptcha" data-sitekey="<?= $googleSiteKey ?>"></div>
+
 		<input type="submit" name="sbmtbtn" id="sbmtbtn" value="Send Form" class="btn">
 
 	</fieldset>

@@ -1,6 +1,3 @@
-Acknowledgement Email
-
-Plain Text
 
     Name: <?=$aOutput['name'] ?>
 
