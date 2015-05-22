@@ -9,34 +9,33 @@
 
 // turn OFF all error reporting	
 
-error_reporting(0); 
+error_reporting(0);
 
-// enable reCaptcha
+// Postman variables
 
-$return = 'redirect'; // self, redirect, or json
+$postman = array(
+	'return'   => 'redirect', // self, redirect, or json
+	'redirect' => false,
+	'captcha'  => true,
+	'attach'   => false, // allow file uploads to be used by this form
+	
+	// reCaptcha configuration
+	'google' => array(
+		'site_key' => '',
+		'secret'   => ''
+	)
+);
 
-$redirectUrl = '';
+// Configure the required fields, 
 
-$lCaptcha = true;
-
-$googleSiteKey = '';
-
-$googleSecretKey = '';
-
-// allow file uploads to be used by this form.
-
-$lAttachUploads = false;
-
-// configure the required fields, 
-//
-
-$aRequiredFields = array( 
-	'Name' => array( 
+$aRequiredFields = array(
+	'Name' => array(
 		'id' => 'name',
 		'min-length' => 3,
 		'scrub' => 'ALPHA'
 	),
-	'Email' => array( 
+
+	'Email' => array(
 		'id' => 'email',
 		'length' => 3,
 		'scrub' => 'EMAIL'
@@ -46,61 +45,80 @@ $aRequiredFields = array(
 // Email sent to first form recipient
 
 $aEmail = array(
-'to' => '', // single email address
-'cc' => '', // single email address
-'bcc' => '', // single email address
-'subject' => 'Contact Form', // subject of the email.
-'msg-html' => 
-	array( 
-		'path' => __DIR__ . '/email-html.php' , // 'file path'
-		'character-set' => 'utf-8' , //  'character set'
-		'content-type' =>'8bit' // 'content type' 7bit, 8bit, base64 
-	), // settings for HTML message
-'msg-text' => 
-	array( 
-		'path' => __DIR__ . '/email-text.php' , // 'file path'
-		'character-set' => 'utf-8' , //  'character set'
-		'content-type' =>'8bit' // 'content type' 7bit, 8bit, base64 
-	), // settings for Plain Text message
-'attachments' => array( '0' => array( 'path' => $_FILES['fupd_1']['tmp_name'] , 'name' => $_FILES['fupd_1']['name'] ) )
+	'to'  		=> '',
+	'cc'  		=> '',
+	'bcc' 		=> '',
+	'subject' => '',
+
+	'msg-html' => array(
+		'path' => __DIR__ . '/email-html.php',
+		'character-set' => 'utf-8',
+		'content-type' => '8bit'
+	),
+
+	'msg-text' => array(
+		'path' => __DIR__ . '/email-text.php',
+		'character-set' => 'utf-8',
+		'content-type' => '8bit'
+	),
+
+	'attachments' => array(
+		array(
+			'path' => $_FILES['fupd_1']['tmp_name'],
+			'name' => $_FILES['fupd_1']['name']
+		)
+	)
 );
 
 // Acknowledgement email to person submitting 
 
 $aAcknowledgment = array(
-'from' => '', 
-'fromname' => '', 
-'cc' => '', 
-'bcc' => '', 
-'subject' => 'Thank You,',
-'msg-html' => 
-	array( 
-		'path' => dirname( __FILE__ ) . '/acknowledgment-html.php' , // 'file path'
-		'character-set' => 'utf-8' , //  'character set'
-		'content-type' =>'8bit' // 'content type'
-	), // settings for HTML message
-'msg-text' => 
-	array( 
-		'path' => dirname( __FILE__ ) . '/acknowledgment-text.php' , // 'file path'
-		'character-set' => 'utf-8' , //  'character set'
-		'content-type' =>'8bit' // 'content type'
-	), // settings for Plain Text message
-'attachments' => array( '0' => array( 'path' => $_FILES['fupd_1']['tmp_name'] , 'name' => $_FILES['fupd_1']['name'] ) )
+	'from' 		 => '', 
+	'fromname' => '', 
+	'cc' 			 => '', 
+	'bcc'      => '', 
+	'subject'  => 'Thank You,',
+
+	'msg-html' => array(
+		'path' => __DIR__ . '/acknowledgment-html.php',
+		'character-set' => 'utf-8',
+		'content-type' => '8bit'
+	),
+
+	'msg-text' => array(
+		'path' => __DIR__ . '/acknowledgment-text.php',
+		'character-set' => 'utf-8',
+		'content-type' => '8bit'
+	),
+
+	'attachments' => array(
+		array(
+			'path' => $_FILES['fupd_1']['tmp_name'],
+			'name' => $_FILES['fupd_1']['name']
+		)
+	)
 );
 
-$cStopWords = 'stop-file.txt';
+$postman['stop_words'] = 'stop-file.txt';
 
 // =============================================================================
 // =============================================================================
 // 'self' => array('type' => 'url', 'what' => 'http://www.foonster.com'), // 
 // 'self' => array('type' => 'message', 'what' => 'Thank you for your feedback. We will be in contact with you.'),
 
-$returnMethod = 
-	array(
-		'json' => array('type' => 'na'),
-		'self' => array('message'=> 'Message sent'), // 
-		'redirect' => array('url' => $redirectUrl), // 
-		);
+$returnMethod = array(
+	'json' => array(
+		'type' => 'na'
+	),
+
+	'self' => array(
+		'message' => 'Message sent'
+	),
+
+	'redirect' => array(
+		'url' => $postman['redirect']
+	)
+);
 
 // - do not adjust below this line, unless you know what you are doing.
 // =============================================================================
