@@ -14,7 +14,7 @@ error_reporting(0);
 // Postman variables
 
 $postman = array(
-	'return'   => 'redirect', // self, redirect, or json
+	'return_type' => 'redirect', // self, redirect, or json
 	'redirect' => false,
 	'captcha'  => true,
 	'attach'   => false, // allow file uploads to be used by this form
@@ -106,7 +106,7 @@ $postman['stop_words'] = 'stop-file.txt';
 // 'self' => array('type' => 'url', 'what' => 'http://www.foonster.com'), // 
 // 'self' => array('type' => 'message', 'what' => 'Thank you for your feedback. We will be in contact with you.'),
 
-$returnMethod = array(
+$postman['return_method'] = array(
 	'json' => array(
 		'type' => 'na'
 	),
