@@ -10,8 +10,8 @@
 These changes apply to my fork of the software. This file does not need to be merged into `foonster/postman`.
 
 - [x] Place variables used by Postman into an array, to prevent from filling the global namespace
-- [] Separate functionality of `Email.php` into individual classes
-- [] Send `Content-Type: application/json` with JSON responses; perhaps send proper HTTP status codes to simplify AJAX interaction
+- [ ] Separate functionality of `Email.php` into individual classes
+- [ ] Send `Content-Type: application/json` with JSON responses; perhaps send proper HTTP status codes to simplify AJAX interaction
 
 ## FILES
 
