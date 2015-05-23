@@ -37,8 +37,9 @@ $email = new Email();
 // $email->setHeader( 'X-CAN-SPAM-1' , 'This message is (or may be) a solicitation or advertisement within the specific meaning of the CAN-SPAM Act of 2003. (I am pretty sure it is not, but just to be safe ....' );
 // $email->setHeader( 'X-CAN-SPAM-2' , 'You can decline to receive further email from this list (\'commercial\' and otherwise) by following the instructions in the body of the email or by using the resources in the List-Unsubscribe, X-Unsubscribe-Email and X-Unsubscribe-Web email headers.' );
 
-$cError = '';
+$postman['error']  = '';
 $result = '';
+
 // run the script
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -46,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	// if ( $reCAPTCHA->is_valid || !$lCaptcha ) 
 	$query_params = array(
-		'secret' => $googleSecretKey,
+		'secret' => $postman['google']['secret'],
 		'response' => $_POST['g-recaptcha-response'],
 		'remoteip' => $_SERVER['REMOTE_ADDR']
 		);
@@ -55,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $response = json_decode($result); 
     
-	if (!$lCaptcha || $response->success == 'true') {	
+	if (!$postman['captcha'] || $response->success == 'true') {	
 		try {
 	
 			// VERIFY ALL FIELDS THAT ARE REQUIRED HAVE VALUES.
@@ -88,8 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				foreach ($_POST AS $cKey => $cValue) {
 					// LOAD STOP WORD FILE
 					
-					if (file_exists($cStopWords)) {
-						$aStopWords = preg_split( "/\n/", $email->slurp( $cStopWords ));
+					if (file_exists($postman['stop_words'])) {
+						$aStopWords = preg_split( "/\n/", $email->slurp( $postman['stop_words'] ));
 						foreach ($aStopWords AS $xKey => $xValue) {
 							$aStopWords[$xKey] = '/\b' . trim( $xValue ) . '\b/i';
 						}
@@ -107,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						
 				// attach any files in the file upload
 			
-				if ($lAttachUploads) {
+				if ($postman['attach']) {
 					foreach ($_FILES AS $xKey => $xValue) {
 						$email->addFileAttachment ($xValue);
 					}
@@ -173,22 +174,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					
 					// finishing up 
 
-					if ($return == 'json') {
+					if ($postman['return_type'] == 'json') {
 						echo json_encode(array('success' => 'true', 'message' => ''));
 						exit;
 					} else {
-						if ($return == 'redirect') {
-							header( "Location: " . $returnMethod['redirect']['url']);
+						if ($postman['return_type'] == 'redirect') {
+							header( "Location: " . $postman['return_method']['redirect']['url']);
 							exit;
 						} else {
-							$cError = $returnMethod['self']['message'];
+							$cError = $postman['return_method']['self']['message'];
 							$_POST = array();
 						}							
 					}
 				} else {
 					!empty($email->error) ? $cError = 'Error: ' . $email->error : $cError = 'Error: there was an issue sending this message.';
 
-					if ($return == 'json') {
+					if ($postman['return_type'] == 'json') {
 						echo json_encode(array('success' => 'false', 'message' => $cError));
 						exit;
 					} else {
@@ -200,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			}
 		}
 		catch ( Exception $e ) {		
-			if ($return == 'json') {
+			if ($postman['return_type'] == 'json') {
 				echo json_encode(array('success' => 'false', 'message' => $e->getMessage()));
 				exit;
 			} else {
@@ -208,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			}					
 		}
 	} else {
-		if ($return == 'json') {
+		if ($postman['return_type'] == 'json') {
 			echo json_encode(array('success' => 'false', 'message' => 'You have failed the reCaptcha process'));
 			exit;
 		} else {
