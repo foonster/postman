@@ -146,7 +146,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'GET' || !empty( $_POST ) )
 		<label for="fupd_1">File:</label>
 		<input type="file" name="fupd_1" id="fupd_1"/><p />
 
-		<div class="g-recaptcha" data-sitekey="<?= $googleSiteKey ?>"></div>
+		<div class="g-recaptcha" data-sitekey="<?= $postman['google']['site_key'] ?>"></div>
 
 		<input type="submit" name="sbmtbtn" id="sbmtbtn" value="Send Form" class="btn">
 
