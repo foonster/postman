@@ -12,6 +12,8 @@ _postman.php - main processing file.
 example.php - example PHP file using the script
  
 Email.php - Foonster Technology Email Module - YAMM
+
+PHPMailer - PHPMailer 6.0
   
 stop-file.txt - file containing all words that you 
 want to supress from the email.
