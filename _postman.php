@@ -28,6 +28,7 @@
 /******************************************************************************/
 // version 6.53.10
 // load up FOONSTER EMAIL CLASS
+error_reporting(0);
 date_default_timezone_set('America/New_York');
 require __DIR__ . '/Email.php';
 require __DIR__ . '/phpmailer/src/PHPMailer.php';
