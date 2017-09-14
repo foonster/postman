@@ -108,20 +108,66 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					}				
 				}
 				$mail->addAddress($aEmail['to']);
-				$mail->addCC($aEmail['cc']);
-				$mail->addBCC($aEmail['bcc'] );
+				// add CC's
+				if (!empty($aEmail['cc'])) {
+					if (strpos($aEmail['cc'], ',') > 0 || strpos($aEmail['cc'], ';') > 0) {
+            			$aSplit = preg_split('/[,|;]/', $aEmail['cc']);
+	            		foreach ($aSplit as $cValue) {
+    	            		$cValue = strtolower(trim($cValue));
+        	        		$mail->addCC($cValue);
+            			}
+        			} else {
+            			$mail->addCC($aEmail['cc']);
+        			}
+        		}
+        		// add BCC's
+        		if (!empty($aEmail['bcc'])) {
+					if (strpos($aEmail['bcc'], ',') > 0 || strpos($aEmail['bcc'], ';') > 0) {
+            			$aSplit = preg_split('/[,|;]/', $aEmail['bcc']);
+	            		foreach ($aSplit as $cValue) {
+    	            		$cValue = strtolower(trim($cValue));
+        	        		$mail->addBCC($cValue);
+            			}
+        			} else {
+            			$mail->addBCC($aEmail['bcc']);
+        			}
+        		}
 				$mail->setFrom($_POST['email'], $_POST['name']);
 				$mail->Subject = $aEmail['subject'];			
-				$mail->msgHTML($email->slurp($aEmail['msg-text']['path'] , $_POST));
-				$mail->AltBody = $email->slurp($aEmail['msg-html']['path'], $_POST);
+				$mail->msgHTML($email->slurp($aEmail['msg-html']['path'] , $_POST));
+				$mail->AltBody = $email->slurp($aEmail['msg-text']['path'], $_POST);
 				if ($mail->send()) {     
 					if ($email->isAddressValid($aAcknowledgment['from']) 
 						&& !empty( $aAcknowledgment['subject'])) {				
 						$ack = new PHPMailer;
 						$ack->addAddress($_POST['email']);					
 						$ack->setFrom($aAcknowledgment['from']);					
-						$ack->addCC($aAcknowledgment['cc']);
-						$ack->addBCC($aAcknowledgment['bcc']);			
+						// add CC's
+						if (!empty($aAcknowledgment['cc'])) {
+							if (strpos($aAcknowledgment['cc'], ',') > 0 
+								|| strpos($aAcknowledgment['cc'], ';') > 0) {
+            					$aSplit = preg_split('/[,|;]/', $aAcknowledgment['cc']);
+	            				foreach ($aSplit as $cValue) {
+		    	            		$cValue = strtolower(trim($cValue));
+        			        		$ack->addCC($cValue);
+            					}
+		        			} else {
+        		    			$ack->addCC($aAcknowledgment['cc']);
+        					}
+		        		}
+        				// add BCC's
+        				if (!empty($aAcknowledgment['bcc'])) {
+							if (strpos($aAcknowledgment['bcc'], ',') > 0 
+								|| strpos($aAcknowledgment['bcc'], ';') > 0) {
+        		    			$aSplit = preg_split('/[,|;]/', $aAcknowledgment['bcc']);
+	            				foreach ($aSplit as $cValue) {
+		    	            		$cValue = strtolower(trim($cValue));
+        			        		$ack->addBCC($cValue);
+            					}
+		        			} else {
+        		    			$ack->addBCC($aAcknowledgment['bcc']);
+		        			}
+        				}
 						$ack->Subject = $aAcknowledgment['subject'];					
 						$ack->msgHTML($email->slurp($aAcknowledgment['msg-html']['path'] , $_POST));
 						$ack->AltBody = $email->slurp($aAcknowledgment['msg-text']['path'], $_POST);
