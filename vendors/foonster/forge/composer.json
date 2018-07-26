@@ -1,0 +1,11 @@
+{
+    "name": "foonster/forge",
+    "description": "Various stand-alone classes used by Zeekee Interactive",
+    "keywords": ["anvil", "html", "email", "calendar", "database"],
+    "type": "library",
+    "homepage": "http://www.foonster.com",
+    "license": "proprietary",
+    "autoload": {
+        "classmap": ["./"]
+    }
+}
